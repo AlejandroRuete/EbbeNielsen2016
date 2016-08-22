@@ -1,0 +1,42 @@
+---
+title: "Ignorance Scores: 3) Small scale example"
+author: "Alejandro Ruete"
+date: "20 June 2016"
+output: html_document
+---
+
+#require(leaflet)
+#require(raster)
+#require(maptools)
+
+Imagine you are a consultancy company
+linear project, 1km wide affecting bird populations
+need to know if you can run your models with GBIF / ArtDatabanken Data, open access opportunistic data, or if you need to collect more. 
+Occupancy model... 
+
+
+```{r Rasterize, eval=FALSE}
+
+```
+
+In some analysis portals (ANALYSPORTAL) or API calls not yet implemented in the mentioned packages (e.g.) you may directly get a file with these data where each row is a grid cell of the desired resolution. Still, to work with it you will need to create a raster from them. The following script help you with that. 
+
+```{r, eval=FALSE, echo=TRUE}
+library(raster)
+library(maptools)
+SweB10k<-readShapePoly("Z:/GIS DataBase/Sweden/Sweden_TerritorySWEREFF99 buffer10k.shp", proj4string=CRS("+proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"))
+Amp <- read.csv("Z:/Artdatabanken/LifeWatch Observation Bias/Data/Amphibia/GridStatisticsOnSpeciesCounts (Amphibia).csv")
+Buf <- read.csv("Z:/Artdatabanken/LifeWatch Observation Bias/Data/Amphibia/GridStatisticsOnSpeciesObservationCounts (Bufo bufo).csv")
+Pel <- read.csv("Z:/Artdatabanken/LifeWatch Observation Bias/Data/Amphibia/GridStatisticsOnSpeciesObservationCounts (Pelophylax lessonae).csv")
+
+y<-Amp
+names(y)<-c("Id","Observation.count","X","Y","Grid.cell.width")
+coordinates(y)<- ~ X + Y
+# coerce to SpatialPixelsDataFrame
+gridded(y) <- TRUE
+# coerce to raster
+tmp.rasterDF <- raster(y, layer=2, values=TRUE)
+tmp.rasterDF <- mask(tmp.rasterDF,SweB10k)
+writeRaster(tmp.rasterDF, paste("Z:/Artdatabanken/LifeWatch Observation Bias/Data/",namesTDF[i],sep=""), "GTiff")
+```
+
