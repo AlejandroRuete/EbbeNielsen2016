@@ -11,13 +11,21 @@ shinyServer(function(input, output, session) {
            "50" = AmpEur50,
            "25" = AmpEur25)
   })
-  richInput <- reactive({
+  richInputRaw <- reactive({
     switch(input$res,
            "100" = AmpEurR100,
            "50" = AmpEurR50,
            "25" = AmpEurR25)
   })
-  
+  richInput <- reactive({
+    tmpR<-richInputRaw()
+    tmp0<-tmpR
+    tmp0[]<-ifelse(is.na(tmpR[]),NA,0)
+    switch(input$ngb,
+           "1" = tmpR,
+           "3" = localFun(tmpR, tmp0, ngb=3, fun=max, na.rm=T),
+           "5" = localFun(tmpR, tmp0, ngb=5, fun=max, na.rm=T))
+  })
   ranaInput <- reactive({
     switch(input$res,
            "100" = Rana100,
@@ -58,14 +66,29 @@ sppPAInput<-reactive({
   })
 }) # end reactive sppPA
 
-sppOddsInput<-reactive({ #Populaiton size index or Odds of sampling a species
-  withProgress(message = 'Calculating PSI', 
+sppPropInput<-reactive({ #Populaiton size index or Odds of sampling a species
+  withProgress(message = 'Calculating Proportions', 
                value = 0.5, {
                  spp <-ranaInput()
                  obs <- obsInput()
-                 rich <- richInput()
+                 # rich <- richInputRaw()
                  setProgress(0.51)
-                 spp.odd<- overlay(spp, obs, rich, fun=function(x,y,z){return(x/(y/z))})
+                 spp.prop<- overlay(spp, obs, fun=function(x,y){return(x/y)}) # Proportion of obs of spp over the total obs count
+                 spp.prop[which(spp.prop[]==Inf)]<-0 ## Inf are errors between Rana and Amp layers, where Rana is present where no Obs are registered
+                 return(spp.prop)
+                 setProgress(0.6)
+               })
+}) # end spp odds
+
+sppOddsInput<-reactive({ #Populaiton size index or Odds of sampling a species
+  withProgress(message = 'Calculating Counts', 
+               value = 0.6, {
+                 spp <-ranaInput()
+                 obs <- obsInput()
+                 # rich <- richInputRaw()
+                 setProgress(0.61)
+                 spp.odd<- overlay(spp, obs, fun=function(x,y){return(x/y * x)}) # How many obs of spp per total obs count
+                 spp.odd[which(spp.odd[]==Inf)]<-0 ## Inf are errors between Rana and Amp layers, where Rana is present where no Obs are registered
                  return(spp.odd)
                  setProgress(0.75)
                })
@@ -250,9 +273,6 @@ ignorTempInput <- reactive({
     input$goButton 
     
     Ign<-isolate(ignorInput())
-    spp.psabs<-isolate(sppPAInput()) #pseudo absences
-    spp.odds<-isolate(sppOddsInput()) #odds
-    spp.pa<-isolate(sppPAcertInput()) #certain PA absences
     popup <- "<strong><i>Rana temporaria</i> distribution</strong> (IUCN)"
     
     leaflet() %>%
@@ -271,11 +291,13 @@ observe({
  
   Ign<-isolate(ignorInput())
   spp.psabs<-isolate(sppPAInput()) #pseudo absences
+  spp.prop<-isolate(sppPropInput()) #odds
   spp.odds<-isolate(sppOddsInput()) #odds
   spp.pa<-isolate(sppPAcertInput()) #certain PA absences
   maxOdd<-ceiling(max(spp.odds[], na.rm=TRUE))
+  palYORprop <- colorNumeric(c("white","yellow","orange", "red"), c(0,1), na.color = "transparent")
   palYOR <- colorNumeric(c("white","yellow","orange", "red"), c(0,maxOdd), na.color = "transparent")
-  
+
   popup <- "<strong><i>Rana temporaria</i> distribution</strong> (IUCN)"
   
   # Remove any existing legend, and only if the legend is
@@ -286,7 +308,9 @@ observe({
     addPolygons(data=RanaPoly, weight = 2, col = "black", fillOpacity = 0, popup = popup)
   if(layer == "SppIgn") proxy %>% addRasterImage(spp.psabs, colors = palRWB, opacity = input$alpha, project=FALSE, layerId = "L") %>% 
     addPolygons(data=RanaPoly, weight = 2, col = "black", fillOpacity = 0, popup = popup)
-  if(layer == "PSI" ) proxy %>% addRasterImage(spp.odds, colors = palYOR, opacity = input$alpha, project=FALSE, layerId = "L") %>% 
+  if(layer == "SppProp" ) proxy %>% addRasterImage(spp.prop, colors = palYORprop, opacity = input$alpha, project=FALSE, layerId = "L") %>% 
+    addPolygons(data=RanaPoly, weight = 2, col = "black", fillOpacity = 0, popup = popup)
+  if(layer == "SppCount" ) proxy %>% addRasterImage(spp.odds, colors = palYOR, opacity = input$alpha, project=FALSE, layerId = "L") %>% 
     addPolygons(data=RanaPoly, weight = 2, col = "black", fillOpacity = 0, popup = popup)
   if(layer == "SppPres") proxy %>% addRasterImage(spp.pa, colors = palGWR, opacity = input$alpha, project=FALSE, layerId = "L") %>%
     addPolygons(data=RanaPoly, weight = 2, col = "black", fillOpacity = 0, popup = popup)
@@ -295,8 +319,10 @@ observe({
 #### Change legend
 observe({
   proxy <- leafletProxy("map")
+  spp.prop<-isolate(sppPropInput()) #odds
   spp.odds<-isolate(sppOddsInput()) #odds
   maxOdd<- ceiling(max(spp.odds[], na.rm=TRUE))
+  palYORprop <- colorNumeric(c("white","yellow","orange", "red"), c(0,1), na.color = "transparent")
   palYOR <- colorNumeric(c("white","yellow","orange", "red"), c(0,maxOdd), na.color = "transparent")
   
   # Remove any existing legend, and only if the legend is
@@ -305,7 +331,8 @@ observe({
   layer <- input$layer
   if(layer == "RTGIgn") proxy %>% addLegend(position = "bottomright", colors = palRWB(c(0,0.2,0.4,0.6,0.8,1)), labels = c(0,0.2,0.4,0.6,0.8,1), title = "Ignorance", opacity = input$alpha)
   if(layer == "SppIgn") proxy %>% addLegend(position = "bottomright", colors = palRWB(c(0,0.2,0.4,0.6,0.8,1)), labels = c(0,0.2,0.4,0.6,0.8,1), title = "Ignorance", opacity = input$alpha)
-  if(layer == "PSI" ) proxy %>% addLegend(position = "bottomright", colors = palYOR(seq(0,maxOdd, by=1)), labels = seq(0,maxOdd,by=1), title = "PSI", opacity = input$alpha)
+  if(layer == "SppProp" ) proxy %>% addLegend(position = "bottomright", colors = palYORprop(seq(0,1, by=0.25)), labels = seq(0, 1, by=0.25), title = "PSI", opacity = input$alpha)
+  if(layer == "SppCount" ) proxy %>% addLegend(position = "bottomright", colors = palYOR(seq(0,maxOdd, by=round(maxOdd/6))), labels = seq(0, maxOdd, by=round(maxOdd/6)), title = "PSI", opacity = input$alpha)
   if(layer == "SppPres") proxy %>% addLegend(position = "bottomright", colors = palGWR(c(0,0.1,0.2,0.3,0.4,0.5,1)), labels = c(0,0.1,0.2,0.3,0.4,0.5,1), title = "Presence", opacity = input$alpha)
 })
 

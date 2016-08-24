@@ -24,7 +24,6 @@ shinyUI(navbarPage("Ignorance Explorer", id="nav", theme = shinytheme("flatly"),
                                 "25" = "25"),
                     width = 200
         ),
-
         numericInput(inputId ="obs50",
                      label = h4("O",tags$sub("0.5"), "RTG = Class Amphibia", br(),
                                 h5("Number of observations required per 25 km grid cell, that is: (res/25)",tags$sup("2"), "x O",tags$sub("0.5"))),
@@ -37,6 +36,14 @@ shinyUI(navbarPage("Ignorance Explorer", id="nav", theme = shinytheme("flatly"),
         checkboxInput(inputId="index",
                       label="Observation index (N/R)",
                       value=TRUE
+        ),
+        radioButtons(inputId = "ngb",
+                    label = h5("Number of cells per side of neighbourhood rectangle to estimate richness."),
+                    choices = c("1" = "1",
+                                "3" = "3",
+                                "5" = "5"),
+                    selected = "1", inline = TRUE,
+                    width = "100%"
         ),
         # Target Species Lists
         tags$hr(),
@@ -63,7 +70,8 @@ shinyUI(navbarPage("Ignorance Explorer", id="nav", theme = shinytheme("flatly"),
                     label = h4("Layer"),
                     choices = c("RTG Ignorance" = "RTGIgn",
                                 "Species Ignorance" = "SppIgn",
-                                "Population Size Index" = "PSI", 
+                                "Species Obs Proportion" = "SppProp",
+                                "Species Obs Count" = "SppCount", 
                                 "Species Presence" = "SppPres"),
                     width = "100%"
         ),
