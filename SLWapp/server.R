@@ -186,7 +186,6 @@ sppOddsInput<-reactive({
                        }
 
               if(input$trans==2) {
-                                 #dataset<- calc(datasetInput(), fun=function(x){return(log(x+1))})
                                  dataset<- calc(dataset, fun=function(x){return(log(x+1))})
                                  }
               CI<-ignorInput()
@@ -284,42 +283,43 @@ output$TransPlot <- renderPlot({
               }
               ## Density plot
               par(mar=c(4,4,3,2),cex=1)
-              #plot(density(dataset.D, from=0), #na.rm=T,
-              hist(dataset.D, from=0, col="lightblue", #na.rm=T,
-                                      xlab=ifelse(input$index==TRUE,paste(ifelse(input$trans!=2,"Obs Index","Log(Obs Index)")," for", as.character(input$dataset)),paste(ifelse(input$trans!=2,"No.","Log(No.)"),"of Obs for", as.character(input$dataset))),
-                                      #paste(ifelse(input$trans!=2,"No.","Log(No.)"),"of Observations for", as.character(input$dataset)),
-                                      ylab="No. cells",
-                                      main=paste("No. records for", as.character(input$dataset)))
+              hist(dataset.D, col="lightblue", #na.rm=T, from=0, 
+                              xlab=ifelse(input$index==TRUE,
+                                          paste(ifelse(input$trans!=2,"Obs Index","Log(Obs Index)")," for", as.character(input$dataset)),
+                                          paste(ifelse(input$trans!=2,"No.","Log(No.)"),"of Obs for", as.character(input$dataset))),
+                              ylab="No. cells",
+                              main=paste("No. records for", as.character(input$dataset)))
 
 
               ## Species Discovery plot
               plot(dataset.D, richV,
-                                      pch=19,
-                                      xlab=ifelse(input$index==TRUE,paste(ifelse(input$trans!=2,"Obs Index","Log(Obs Index)")," for", as.character(input$dataset)),paste(ifelse(input$trans!=2,"No.","Log(No.)"),"of Obs for", as.character(input$dataset))),
-                                      #paste(ifelse(input$trans!=2,"No.","Log(No.)"),"of Observations for", as.character(input$dataset)),
-                                      ylab="Richness",
-                                      main=paste("Richnes vs. Observations for", as.character(input$dataset)))
-              #abline(a=0,b=1)
+                            pch=19,
+                            xlab=ifelse(input$index==TRUE,
+                                        paste(ifelse(input$trans!=2,"Obs Index","Log(Obs Index)")," for", as.character(input$dataset)),
+                                        paste(ifelse(input$trans!=2,"No.","Log(No.)"),"of Obs for", as.character(input$dataset))),
+                            ylab="Richness",
+                            main=paste("Richnes vs. Observations for", as.character(input$dataset)))
 
               ## Algorithms plot
               maxX<-max(datasetI)
               transnorm<-function(x, maxX){
-                                    norm<-x/maxX
-                                    norm<- 1- norm
-                                    return(norm)
+                          norm<-x/maxX
+                          norm<- 1- norm
+                          return(norm)
               }
               par(mar=c(4,4,3,2),cex=1)
               curve(transnorm(x,maxX), from=0,to=maxX, n = 1001, ylim=c(0,1), lwd=2,
-                                    xlab=ifelse(input$index==TRUE,paste("Obs Index for", as.character(input$dataset)),paste("No. of Obs for", as.character(input$dataset))),
-                                    #paste("No. of Observations for", as.character(input$dataset)), #paste(ifelse(input$trans!=2,"No.","Log(No.)"),"of Observations for", as.character(input$dataset)),
-                                    ylab="Ignorance score",
-                                    main="Ignorance scores")
+                            xlab=ifelse(input$index==TRUE,
+                                        paste("Obs Index for", as.character(input$dataset)),
+                                        paste("No. of Obs for", as.character(input$dataset))),
+                            ylab="Ignorance score",
+                            main="Ignorance scores")
 
               translog<-function(x,dec){
-                      logx<-log(x+dec)#+abs(min(log(x+dec))) ## second term not needed if dec = 1
-                      logx.norm<-logx/max(logx)
-                      logCI<-1 -(logx.norm)
-                      return(logCI)
+                        logx<-log(x+dec)
+                        logx.norm<-logx/max(logx)
+                        logCI<-1 -(logx.norm)
+                        return(logCI)
                       }
               curve(translog(x,1), col=4, lwd=2,add=T)
 
@@ -329,9 +329,6 @@ output$TransPlot <- renderPlot({
               abline(v=1, lty=3)
               abline(v=obs50, lty=3, col=2)
               abline(h=0.5, lty=3, col=2)
-#              exp1<-expression(Normalized = 1 - x/ max(x),
-#                               LogNormalized = 1 - log(x+1)/max( log(x+1) ),
-#                               Inversed = O[0.5]/(x+O[0.5]))
               legend("topright", legend=c("Normalized","Log-Normalized","Half-ignorance"),
                                           lty=1, lwd=2, col=c("black","blue","red"),bty="n")
   }) #end outputPlot
