@@ -2,6 +2,9 @@ palRWB <- colorNumeric(c("blue","white", "red"), c(0,1), na.color = "transparent
 palGWR <- colorNumeric(c("red","lightpink", "green4"), c(0,1), na.color = "transparent")
 colCount<-c("black", "#7FC97F", "#BEAED4", "#FDC086", "#CDCD00", "#386CB0", "#F0027F", "#BF5B17", "#666666") # Accent
 #colCount<-c("black","#9F0F44", "#D53E4F", "#E76835", "#EFAD54", "#F8DF8A", "#EBEA9A", "#B7D3A3", "#72BCA5", "#2A8ABC", "#554F95")
+funM<-function(x, y, ...){
+  return(max(c(x,y), na.rm=T))
+}
 
 shinyServer(function(input, output, session) {
   # Return the requested dataset
@@ -20,11 +23,11 @@ shinyServer(function(input, output, session) {
   richInput <- reactive({
     tmpR<-richInputRaw()
     tmp0<-tmpR
-    tmp0[]<-ifelse(is.na(tmpR[]),NA,0)
+    tmp0[]<-0
     switch(input$ngb,
            "1" = tmpR,
-           "3" = localFun(tmpR, tmp0, ngb=3, fun=max, na.rm=T),
-           "5" = localFun(tmpR, tmp0, ngb=5, fun=max, na.rm=T))
+           "3" = localFun(tmpR, tmp0, ngb=3, fun=funM),
+           "5" = localFun(tmpR, tmp0, ngb=5, fun=funM))
   })
   ranaInput <- reactive({
     switch(input$res,

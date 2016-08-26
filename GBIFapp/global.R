@@ -47,13 +47,3 @@ CountriesAb[29]<-"Isle of Man"
 CountriesList<-Countries[order(CountriesAb)]
 CountriesListAb<-CountriesAb[order(CountriesAb)]
 CountriesNumbers<-c(1:length(Countries))[order(CountriesAb)]
-
-
-
-
-
-
-
-
-
-

@@ -1,14 +1,10 @@
 Simple algorithms to display ignorance maps of raw data accessed from species observation databases
-=======================================================================================================================
+======================================================================================================================
 The Swedish LifeWatch implementation
-
-
-Here you can download an interactive HTML application compiled in R that accompanies the text:
-Ruete A. 2015. Displaying bias in sampling effort of data accessed from biodiversity databases using ignorance maps. Biodiversity Data Journal 3:e5361.
 
 This interactive application exemplifies the use of three different algorithms to map the ignorance (i.e. bias and lack of sampling effort) present in the observations accessed through the Swedish LifeWatch biodiversity analysis portal <a href="http://www.swedishlifewatch.se">www.swedishlifewatch.se</a>.
 
-To run it you will need to install R <http://www.r-project.org/> and install the following packages: shiny, raster, rgdal, and maptools.
+You can test it <a href="https://aleruete.shinyapps.io/SLWapp/">here</a> or run it locally in your computer. To run it locally you will need to install <a href="http://www.r-project.org/">R</a> and install the following packages: shiny, raster, rgdal, and maptools.
 
        install.packages(c("shiny", "raster", "rgdal", "maptools"))
 
@@ -60,6 +56,6 @@ On the left panel you find options for the Reference taxonomic group and Target 
 0. Else the Step algorithm is equal to the Half-ignorance algorithm.
 
 ### Authors and Contributors
-Application developed by Alejandro Ruete in Dec 2014.
+Application developed by Alejandro Ruete in Dec 2014. Updated in August 2016
 DOI: dx.doi.org/10.5281/zenodo.17593
 ### Licence GNU v.3
