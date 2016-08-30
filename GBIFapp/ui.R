@@ -1,5 +1,6 @@
 
-shinyUI(navbarPage("Ignorance Explorer", id="nav", theme = shinytheme("flatly"), windowTitle="Ignorance Explorer",
+shinyUI(navbarPage("Ignorance Explorer", id="nav", theme = shinytheme("flatly"),
+                   windowTitle="Ignorance Explorer",
   ############# MAP #########
   tabPanel("Spatial Bias",
     div(class="outer",
@@ -25,8 +26,9 @@ shinyUI(navbarPage("Ignorance Explorer", id="nav", theme = shinytheme("flatly"),
                     width = 200
         ),
         numericInput(inputId ="obs50",
-                     label = h4("O",tags$sub("0.5"), "RTG = Class Amphibia", br(),
-                                h5("Number of observations required per 25 km grid cell, that is: (res/25)",tags$sup("2"), "x O",tags$sub("0.5"))),
+                     label = h4("O",tags$sub("0.5"), "RTG = Class Amphibia", 
+                                tags$sup(tags$abbr(title="Number of observations required per 25 km grid cell", icon("question-circle")))),
+                                #br(), h5("Number of observations required per 25 km grid cell, that is: (res/25)",tags$sup("2"), "x O",tags$sub("0.5"))),
                      value = 1, #(res/(25))^2
                      min = 0.1,
                      max = 1000,
@@ -48,7 +50,9 @@ shinyUI(navbarPage("Ignorance Explorer", id="nav", theme = shinytheme("flatly"),
         # Target Species Lists
         tags$hr(),
         numericInput(inputId ="obs50spp", # for each 25km 
-                     label = h4("O",tags$sub("0.5"),  em("Rana temporaria"), br(), h5("Number of observations required per 25 km grid cell")),
+                     label = h4("O",tags$sub("0.5"),  em("Rana temporaria"),
+                                tags$sup(tags$abbr(title="Number of observations required per 25 km grid cell", icon("question-circle")))),
+                                # br(), h5("Number of observations required per 25 km grid cell")),
                      value = 1,
                      min = 0.1,
                      max = 100,
@@ -95,7 +99,9 @@ shinyUI(navbarPage("Ignorance Explorer", id="nav", theme = shinytheme("flatly"),
         p("In this tab we slice ignorance trough time, and group it by country at different resolutions. The aim is to explore when and where were observations collected.
           For agility reasons the temporal analysis is done onnly with 100 km grids cells. However, the resolution analysis uses allways all observations"),
         numericInput(inputId ="obs50D",
-                     label = h4("O",tags$sub("0.5"), "RTG = Class Amphibia",br(),h5("Number of observations required per 25 km grid cell")),
+                     label = h4("O",tags$sub("0.5"), "RTG = Class Amphibia",
+                                #br(), h5("Number of observations required per 25 km grid cell")),
+                                tags$sup(tags$abbr(title="Number of observations required per 25 km grid cell", icon("question-circle")))),
                      value = 1, 
                      min = .1,
                      max = 100,
@@ -153,7 +159,5 @@ shinyUI(navbarPage("Ignorance Explorer", id="nav", theme = shinytheme("flatly"),
       includeHTML("data/Description.htm"),
       offset=2)
     )
-  ),
-
-  conditionalPanel("false", icon("crosshair"))
+   )
 ))
