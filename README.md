@@ -96,7 +96,7 @@ An imaginary environmental consultancy company was contracted to assess the envi
 
 
 #### Research tools 
-span style="color:blue"><sub>Disclaimer: work in progress with variable speed depending on funding availability. Supporters and collaborations are welcome.</sub></span>
+<span style="color:blue"><sub>Disclaimer: work in progress with variable speed depending on funding availability. Supporters and collaborations are welcome.</sub></span>
 
 The most obvious use for ignorance maps for more sophisticated analyses is to mask out areas of high uncertainty from layers derived from the raw data, excluding them from further analyses. A first presence and pseudo-absence map for individual species could be quickly derived from the primary data as shown in the GBIFapp (fifth layer under *Layers*, on the Spatial Bias tab). In this example, multiplying the opposite of the ignorance map (*certainty* = 1 - *ignorance*) by the ignorance scores applied to observations of a focal species will weight these to the knowledge available. 
 
