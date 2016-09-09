@@ -40,11 +40,11 @@ I present an approach to quantify, explore and compare the lack of data (**Ignor
 #### Dimensions of the gaps considered
 The algorithm behind the Ignorance Score is designed for comparison of bias and gaps in primary biodiversity data across taxonomy, time and space:
 
-1. **Taxonomy**: applies to any species groups<sup>\*</sup>, but has also applications at the species level. 
+1. **Taxonomy**: applies to any species groups<sup>a</sup>, but has also applications at the species level. 
 2. **Time**: can be used to aggregate or dissect bias over time.  
 3. **Space**: compares by pixel or between irregular polygons of different sizes, and can be suited to different resolutions.  
 
-<sup>*</sup>: as reference taxonomic groups, defined below.
+a: as reference taxonomic groups, defined below.
 
 ### Description
 >"The greatest enemy of knowledge is not ignorance; it is the illusion of knowledge."  
@@ -96,7 +96,7 @@ An imaginary environmental consultancy company was contracted to assess the envi
 
 
 #### Research tools 
-<sub>**Disclaimer: work in progress with variable speed depending on funding availability. Supporters and collaborations are welcome.**</sub>
+**<sub>Disclaimer: work in progress with variable speed depending on funding availability. Supporters and collaborations are welcome.</sub>**
 
 The most obvious use for ignorance maps for more sophisticated analyses is to mask out areas of high uncertainty from layers derived from the raw data, excluding them from further analyses. A first presence and pseudo-absence map for individual species could be quickly derived from the primary data as shown in the GBIFapp (fifth layer under *Layers*, on the Spatial Bias tab). In this example, multiplying the opposite of the ignorance map (*certainty* = 1 - *ignorance*) by the ignorance scores applied to observations of a focal species will weight these to the knowledge available. 
 
@@ -114,25 +114,25 @@ These applications are planned to be fully explored in the future.
 
 
 ### References
-- Anderson RP, AraÃºjo M, Guisan A, Lobo J, MartÃ?nez-Meyer E, Peterson AT, SoberÃ³n J (2016) Report of the task group on GBIF data fitness for use in distribution modelling. 27pp. GBIF Secretariat, Copenhagen.
-- ArgÃ¡ez J, AndrÃ©s Christen J, Nakamura M, SoberÃ³n J (2005) Prediction of potential areas of species distributions based on presence-only data. Environmental and Ecological Statistics 12 (1):27-44. doi:10.1007/s10651-005-6816-2
+- Anderson RP, Araújo M, Guisan A, Lobo J, Martínez-Meyer E, Peterson AT, Soberón J (2016) Report of the task group on GBIF data fitness for use in distribution modelling. 27pp. GBIF Secretariat, Copenhagen.
+- Argáez J, Andrés Christen J, Nakamura M, Soberón J (2005) Prediction of potential areas of species distributions based on presence-only data. Environmental and Ecological Statistics 12 (1):27-44. doi:10.1007/s10651-005-6816-2
 - Hertzog L, Besnard A, Jay-Robert P (2014) Field validation shows bias-corrected pseudo-absence selection is the best method for predictive species-distribution modelling. Diversity and Distributions 20 (12):1403-1413. doi:10.1111/ddi.12249
 - Hill M (2012) Local frequency as a key to interpreting species occurrence data when recording effort is not known. Methods in Ecology and Evolution 3 (1):195-205. doi:10.1111/j.2041-210X.2011.00146.x
-- Hortal J, Lobo J, JimÃ©nez-Valverde A (2007) Limitations of biodiversity databases: case study on seed-plant diversity in tenerife, canary islands. Conservation Biology 21 (3):853-863. doi:10.1111/j.1523-1739.2007.00686.x
+- Hortal J, Lobo J, Jiménez-Valverde A (2007) Limitations of biodiversity databases: case study on seed-plant diversity in tenerife, canary islands. Conservation Biology 21 (3):853-863. doi:10.1111/j.1523-1739.2007.00686.x
 - Hurlbert A, Jetz W (2007) Species richness, hotspots, and the scale dependence of range maps in ecology and conservation. Proceedings of the National Academy of Sciences 104 (33):13384-13389. doi:10.1073/pnas.0704469104
-- Jeppsson T, Lindhe A, GÃ¤rdenfors U, Forslund P (2010) The use of historical collections to estimate population trends: A case study using Swedish longhorn beetles (Coleoptera: Cerambycidae). Biological Conservation 143 (9):1940-1950. doi:10.1016/j.biocon.2010.04.015
+- Jeppsson T, Lindhe A, Gärdenfors U, Forslund P (2010) The use of historical collections to estimate population trends: A case study using Swedish longhorn beetles (Coleoptera: Cerambycidae). Biological Conservation 143 (9):1940-1950. doi:10.1016/j.biocon.2010.04.015
 - Mair L, Ruete A (2016) Explaining spatial variation in the recording effort of citizen science data across multiple taxa. PLoS ONE 11(1): e0147796. doi:10.1371/journal.pone.0147796
 - McCarthy M, Masters P (2005) Profiting from prior information in Bayesian analyses of ecological data. Journal of Applied Ecology 42 (6):1012-1019. doi:10.1111/j.1365-2664.2005.01101.x
-- Phillips S, DudÃ?k M, Elith J, Graham C, Lehmann A, Leathwick J, Ferrier S (2009) Sample selection bias and presence-only distribution models: implications for background and pseudo-absence data. Ecological Applications 19 (1):181-197. doi:10.1890/07-2153.1
+- Phillips S, Dudík M, Elith J, Graham C, Lehmann A, Leathwick J, Ferrier S (2009) Sample selection bias and presence-only distribution models: implications for background and pseudo-absence data. Ecological Applications 19 (1):181-197. doi:10.1890/07-2153.1
 - Ponder WF, Carter GA, Flemons P, Chapman RR (2001) Evaluation of museum collection data for use in biodiversity assessment. Conservation Biology 15 (3):648-657. doi:10.1046/j.1523-1739.2001.015003648.x
 - Prendergast JR, Wood SN, Lawton JH, Eversham BC (1993) Correcting for variation in recording effort in analyses of diversity hotspots. Biodiversity Letters 1 (2):39. doi:10.2307/2999649
-- Rocchini D, Hortal J, Lengyel S, Lobo J, JimÃ©nez-Valverde A, Ricotta C, Bacaro G, Chiarucci A (2011) Accounting for uncertainty when mapping species distributions: The need for maps of ignorance. Progress in Physical Geography 35 (2):211-226. doi:10.1177/0309133311399491
+- Rocchini D, Hortal J, Lengyel S, Lobo J, Jiménez-Valverde A, Ricotta C, Bacaro G, Chiarucci A (2011) Accounting for uncertainty when mapping species distributions: The need for maps of ignorance. Progress in Physical Geography 35 (2):211-226. doi:10.1177/0309133311399491
 -Ruete A (2015) Displaying bias in sampling effort of data accessed from biodiversity databases using ignorance maps. Biodiversity Data Journal 3:e5361. doi:10.3897/BDJ.3.e5361
 - Schulman L, Toivonen T, Ruokolainen K (2007) Analysing botanical collecting effort in Amazonia and correcting for it in species range estimation. Journal of Biogeography 34(8):1388-1399. doi:10.1111/j.1365-2699.2007.01716.x
-- SnÃ¤ll T, Kindvall O, Nilsson J, PÃ¤rt T (2011) Evaluating citizen-based presence data for bird monitoring. Biological Conservation 144 (2):804-810. doi:10.1016/j.biocon.2010.11.010
-- Sousa-Baena MS, Garcia LC, Peterson AT (2014) Completeness of digital accessible knowledge of the plants of Brazil and priorities for survey and inventory. Diversity and Distributions 20:369â€“381. doi:10.1111/ddi.12136
-- Stropp J, Ladle RJ, Malhado ACM, Hortal J, Gaffuri J, Temperley WH, Olav SkÃ¸ien J & Mayaux P (2016), Mapping ignorance: 300 years of collecting flowering plants in Africa. Global Ecology and Biogeography. doi:10.1111/geb.12468
+- Snäll T, Kindvall O, Nilsson J, Pärt T (2011) Evaluating citizen-based presence data for bird monitoring. Biological Conservation 144 (2):804-810. doi:10.1016/j.biocon.2010.11.010
+- Sousa-Baena MS, Garcia LC, Peterson AT (2014) Completeness of digital accessible knowledge of the plants of Brazil and priorities for survey and inventory. Diversity and Distributions 20:369-381. doi:10.1111/ddi.12136
+- Stropp J, Ladle RJ, Malhado ACM, Hortal J, Gaffuri J, Temperley WH, Olav Skøien J & Mayaux P (2016), Mapping ignorance: 300 years of collecting flowering plants in Africa. Global Ecology and Biogeography. doi:10.1111/geb.12468
 - Stolar J, Nielsen S (2015) Accounting for spatially biased sampling effort in presence-only species distribution modelling. Diversity and Distributions 21 (5):595-608. doi:10.1111/ddi.12279
 - Suarez A, Tsutsui N (2004) The value of museum collections for research and society. BioScience 54 (1):66. doi:10.1641/0006-3568(2004)054[0066:TVOMCF]2.0.CO;2
-- Syfert M, Smith M, Coomes D (2013) The effects of sampling bias and model complexity on the predictive performance of Maxent species distribution models. PLoSONE 8 (2): e55158. doi:10.1371/journal.pone.0055158
+- Syfert M, Smith M, Coomes D (2013) The effects of sampling bias and model complexity on the predictive performance of Maxent species distribution models. PLoSONE 8 (2):e55158. doi:10.1371/journal.pone.0055158
 
