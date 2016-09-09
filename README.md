@@ -40,9 +40,9 @@ I present an approach to quantify, explore and compare the lack of data (**Ignor
 #### Dimensions of the gaps considered
 The algorithm behind the Ignorance Score is designed for comparison of bias and gaps in primary biodiversity data across taxonomy, time and space:
 
-1.**Taxonomy**: applies to any species groups<sup>*</sup>, but has also applications at the species level.   
-2.**Time**: can be used to aggregate or dissect bias over time.  
-3.**Space**: compares by pixel or between irregular polygons of different sizes, and can be suited to different resolutions.  
+1. **Taxonomy**: applies to any species groups<sup>\*</sup>, but has also applications at the species level. 
+2. **Time**: can be used to aggregate or dissect bias over time.  
+3. **Space**: compares by pixel or between irregular polygons of different sizes, and can be suited to different resolutions.  
 
 <sup>*</sup>: as reference taxonomic groups, defined below.
 
@@ -92,11 +92,11 @@ Small scale applied example:
 An imaginary environmental consultancy company was contracted to assess the environmental impact of a projected power-line. The consultancy wants to decide whether to spend time doing field surveys for birds over the affected area or to draw conclusions using the primary biodiversity data stored at a GBIF's national node.  The affected area is 1 km wide. A quick look at the ignorance map for birds (Fig. 3) shows a typical good sampling effort over urban areas and water bodies, but rather poor over forests (the habitat mostly affected by the project). Any attempt to assess species presence on this area would certainly require either a thorough survey or rely on habitat associations based on observations collected on similar habitats but further away.
 
 ![Figure 3: PowerLine example](https://raw.github.com/AlejandroRuete/EbbeNielsen2016/master/PowerLine%20HabitatsAndIgn.png)
-**Figure 3**: Imaginary projected power-line (bright green) over a land-use map (left panel; <font color="red">red</font>: urban, <font background-color="black"; color="black">beige</font>: open field, <font color="green">greens</font>: different types of forests, <font color="blue">blue</font>: water), and a 1x1 km resolution ignorance map for all birds (right panel; <font color="red">red</font>: IS = 1, <font color="black">white</font>: IS = 0.5, <font color="blue">blue</font>: IS = 0; data source: [Swedish LifeWatch](https://www.analysisportal.se/)). 
+**Figure 3**: Imaginary projected power-line (bright green) over a land-use map (left panel; red: urban, beige: open field, greens: different types of forests, blue: water), and a 1x1 km resolution ignorance map for all birds (right panel; red: IS = 1, white: IS = 0.5, blue: IS = 0; data source: [Swedish LifeWatch](https://www.analysisportal.se/)). 
 
 
 #### Research tools 
-<span style="color:blue"><sub>Disclaimer: work in progress with variable speed depending on funding availability. Supporters and collaborations are welcome.</sub></span>
+<sub>**Disclaimer: work in progress with variable speed depending on funding availability. Supporters and collaborations are welcome.**</sub>
 
 The most obvious use for ignorance maps for more sophisticated analyses is to mask out areas of high uncertainty from layers derived from the raw data, excluding them from further analyses. A first presence and pseudo-absence map for individual species could be quickly derived from the primary data as shown in the GBIFapp (fifth layer under *Layers*, on the Spatial Bias tab). In this example, multiplying the opposite of the ignorance map (*certainty* = 1 - *ignorance*) by the ignorance scores applied to observations of a focal species will weight these to the knowledge available. 
 
