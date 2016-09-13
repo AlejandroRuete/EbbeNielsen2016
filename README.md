@@ -18,7 +18,7 @@ This entry consists of:
  - two HTML applications hosted in [Shinyapps.io](https://www.shinyapps.io/) with explanations and examples on the capabilities and limitations of the Ignorance Scores: 
 	 - [SLWapp](https://aleruete.shinyapps.io/SLWapp/)  introduce the algorithms and compares the ignorance between seven species groups in Sweden.
 	 - [GBIFapp](https://aleruete.shinyapps.io/GBIFapp/) explores ignorance over space and time for the Amphibians in Europe.
- - a [tutorial](https://github.com/AlejandroRuete/EbbeNielsen2016/tree/master/DataHandlingTutorial) on how to process primary biodiversity data in R to produce your own ignorance maps (mainly based on other excellent tutorials).
+ - a [tutorial](https://github.com/AlejandroRuete/EbbeNielsen2016/blob/master/DataHandlingTutorial/How%20to%20rasterize%20primary%20biodiversity%20data.pdf) on how to process primary biodiversity data in R to produce your own ignorance maps (mainly based on other excellent tutorials).
 
 #### Audience
 The approach here presented is meant for managers and users of primary biodiversity data to identify gaps, to assess the spatial and temporal bias inherent to the data, as well as to evaluate the relative gain in knowledge added from new observations. The potential of this tool lies in the simplicity of its algorithm and the few assumptions required, giving the user the freedom to tailor analyses to their specific needs. Any infrastructure for biodiversity information can implement this approach to offer a quick visual quality report. Quantifying the sampling effort of the observation also allows users to incorporate uncertainty into analyses of species' richness and distributions, and to identify areas were unreliable results are expected. 
