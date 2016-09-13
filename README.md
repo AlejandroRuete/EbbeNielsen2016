@@ -1,6 +1,6 @@
 ## **Mapping ignorance in space and time**
 ### Where and when is data enough? A simple algorithm for fast implementations and comparable results.
-This document complements the entry to the 2016 GBIF Ebbe Nielsen Challenge presented in [DevPost](devpost.com/software/mapping-ignorance-in-space-and-time-evtf4a).
+This document complements the entry to the 2016 GBIF Ebbe Nielsen Challenge presented in [DevPost](http://devpost.com/software/mapping-ignorance-in-space-and-time-evtf4a).
 
 ### Entry Details
 #### Team members: 
