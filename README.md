@@ -44,7 +44,7 @@ The algorithm behind the Ignorance Score is designed for comparison of bias and 
 2. **Time**: can be used to aggregate or dissect bias over time.  
 3. **Space**: compares by pixel or between irregular polygons of different sizes, and can be suited to different resolutions.  
 
-a: as reference taxonomic groups, defined below.
+<sup>a</sup>: as reference taxonomic groups, defined below.
 
 ### Description
 >"The greatest enemy of knowledge is not ignorance; it is the illusion of knowledge."  
