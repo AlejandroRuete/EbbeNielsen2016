@@ -77,7 +77,7 @@ Tools to visually evaluate biases and gaps on the data guide strategic mobilizat
 Consider the following example: currently, the GBIF API offers summaries of counts of observations per grid cells. Provided that the GBIF API can also offer species counts (either observed, estimated, or both), Ignorance Scores could be quickly accessed via web map tile services (WMS) and be implement in e.g. smartphone applications for citizen-scientist observers (Fig. 1).
 
 ![Figure 1](https://raw.github.com/AlejandroRuete/EbbeNielsen2016/master/PokeIgnorance%20screen%20shot400.png "Figure 1")  
-**Figure 1**: screenshot from the game *Pokémon Go* adapted to show the potential implementation of Ignorance maps (red = 1, blue = 0) in augmented-reality applications helping citizen-scientists to collect data with smartphones
+**Figure 1**: modified screenshot from the game *Pokémon Go* adapted to show the potential implementation of Ignorance maps (red = 1, blue = 0) in augmented-reality applications helping citizen-scientists to collect data with smartphones
 
 The same solution could be used to colour polygons representing e.g. ecoregions or countries based on the average ignorance of the area (Fig. 2), to produce systematic gaps analysis across RTGs. 
 
