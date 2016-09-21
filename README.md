@@ -4,7 +4,8 @@ This document complements the entry to the 2016 GBIF Ebbe Nielsen Challenge pres
 
 ### Entry Details
 #### Team members: 
-Alejandro Ruete PhD (Swedish University of Agricultural Sciences, Uppsala, Sweden) email: [aleruete@gmail.com](mailto:aleruete@gmail.com)
+Alejandro Ruete PhD (Swedish University of Agricultural Sciences, Uppsala, Sweden)
+Email: [aleruete@gmail.com](mailto:aleruete@gmail.com)
 
 #### Technical specification
 Platform: ANY  
@@ -75,7 +76,7 @@ Tools to visually evaluate biases and gaps on the data guide strategic mobilizat
 
 Consider the following example: currently, the GBIF API offers summaries of counts of observations per grid cells. Provided that the GBIF API can also offer species counts (either observed, estimated, or both), Ignorance Scores could be quickly accessed via web map tile services (WMS) and be implement in e.g. smartphone applications for citizen-scientist observers (Fig. 1).
 
-![Figure 1](https://raw.github.com/AlejandroRuete/EbbeNielsen2016/master/PokeIgnorance%20screen%20shot400.png "Figure 1")  
+![Figure 1](https://raw.github.com/AlejandroRuete/EbbeNielsen2016/master/PokeIgnorance%20screen%20shot.png "Figure 1")  
 **Figure 1**: modified screenshot from the game *Pokémon Go* adapted to show the potential implementation of Ignorance maps (red = 1, blue = 0) in augmented-reality applications helping citizen-scientists to collect data with smartphones
 
 The same solution could be used to colour polygons representing e.g. ecoregions or countries based on the average ignorance of the area (Fig. 2), to produce systematic gaps analysis across RTGs. 
@@ -128,7 +129,7 @@ These applications are planned to be fully explored in the future.
 - Ponder WF, Carter GA, Flemons P, Chapman RR (2001) Evaluation of museum collection data for use in biodiversity assessment. Conservation Biology 15 (3):648-657. doi:10.1046/j.1523-1739.2001.015003648.x
 - Prendergast JR, Wood SN, Lawton JH, Eversham BC (1993) Correcting for variation in recording effort in analyses of diversity hotspots. Biodiversity Letters 1 (2):39. doi:10.2307/2999649
 - Rocchini D, Hortal J, Lengyel S, Lobo J, Jiménez-Valverde A, Ricotta C, Bacaro G, Chiarucci A (2011) Accounting for uncertainty when mapping species distributions: The need for maps of ignorance. Progress in Physical Geography 35 (2):211-226. doi:10.1177/0309133311399491
--Ruete A (2015) Displaying bias in sampling effort of data accessed from biodiversity databases using ignorance maps. Biodiversity Data Journal 3:e5361. doi:10.3897/BDJ.3.e5361
+- Ruete A (2015) Displaying bias in sampling effort of data accessed from biodiversity databases using ignorance maps. Biodiversity Data Journal 3:e5361. doi:10.3897/BDJ.3.e5361
 - Schulman L, Toivonen T, Ruokolainen K (2007) Analysing botanical collecting effort in Amazonia and correcting for it in species range estimation. Journal of Biogeography 34(8):1388-1399. doi:10.1111/j.1365-2699.2007.01716.x
 - Snäll T, Kindvall O, Nilsson J, Pärt T (2011) Evaluating citizen-based presence data for bird monitoring. Biological Conservation 144 (2):804-810. doi:10.1016/j.biocon.2010.11.010
 - Sousa-Baena MS, Garcia LC, Peterson AT (2014) Completeness of digital accessible knowledge of the plants of Brazil and priorities for survey and inventory. Diversity and Distributions 20:369-381. doi:10.1111/ddi.12136
