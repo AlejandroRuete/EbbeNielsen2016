@@ -278,11 +278,13 @@ ignorTempInput <- reactive({
     Ign<-isolate(ignorInput())
     popup <- "<strong><i>Rana temporaria</i> distribution</strong> (IUCN)"
     
+    
     leaflet() %>%
       addTiles() %>% #options = tileOptions()
       setView(lng = 15, lat = 60, zoom = 4) %>% 
       addRasterImage(Ign, colors = palRWB, opacity = isolate(input$alpha), project=FALSE, layerId = "L") %>%
-      addPolygons(data=RanaPoly, weight = 2, col = "black", fillOpacity = 0, popup = popup) %>%
+      addPolygons(data=RanaPoly, weight = 2, col = "black", fillOpacity = 0) %>%  #, popup = popup, options = popupOptions(keepInView = TRUE)
+      addPopups(lng = 15, lat = 50, popup) %>%
       addLegend(position = "bottomright", colors = palRWB(c(0,0.2,0.4,0.6,0.8,1)), 
                 labels = c(0,0.2,0.4,0.6,0.8,1), title = "Ignorance", opacity = isolate(input$alpha))
 }) ## end render map
