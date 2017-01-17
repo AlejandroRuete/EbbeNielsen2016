@@ -133,7 +133,7 @@ shinyUI(navbarPage("Ignorance Explorer", id="nav", theme = shinytheme("flatly"),
         p("Some observation have no data about the year they where collected. 
           In some countries they could represent a significant proportion of the data."),
         checkboxInput(inputId="NAplot",
-                      label="Do you whant to include observations with year = NA?",
+                      label="Do you want to include observations with year = NA?",
                       value=TRUE, width = "100%"
         ),
         checkboxGroupInput(inputId="resPlot",
