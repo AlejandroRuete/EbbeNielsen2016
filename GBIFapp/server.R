@@ -372,7 +372,7 @@ output$TempIgn <- renderPlot({
         points(input$time[2], ignMc, pch=19, col=colCount[c+1])
         incProgress(amount=1/c)
       }
-      legend(input$time[1], 0.3, legend=c("Obsesrvations w/ year = NA", "Selected years (density plots below)"), 
+      legend(input$time[1], 0.3, legend=c("Observations w/ year = NA", "Selected years (density plots below)"), 
              title="Mean over:", title.adj = 0, col=colCount[1], pch=c(1,19),  bty="n", yjust=1.2, cex=0.8)
     })
   }# end if
