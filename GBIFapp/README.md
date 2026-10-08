@@ -3,12 +3,31 @@ Exploration of Ignorance Scores over Space and Time
 
 This is an interactive application that exemplifies the use of the half-ignorance algorithm <abbr title="Ruete A. 2015. Displaying bias in sampling effort of data accessed from biodiversity databases using ignorance maps. Biodiversity Data Journal 3:e5361"><font color="blue">[1]</font></abbr> to map the ignorance (i.e. bias and lack of sampling effort) inherent to the observations stored in the Global biodiversity Information Facility <a href="http://www.gbif.org"> (GBIF)</a> and downloaded in any of the ways detailed in the tutorials found here.</p>
 
-You can test it <a href="https://aleruete.shinyapps.io/GBIFapp/">here</a> or run it locally in your computer. To run it locally you will need to install <a href="http://www.r-project.org/">R</a> and install the following packages: shiny, shinythemes, leaflet, dplyr, DT, rgdal, raster, maptools, RColorBrewer.
+You can test it <a href="https://aleruete.shinyapps.io/GBIFapp/">here</a> or run it locally. Install a current version of R and the following packages:
 
-       install.packages(c("shiny", "shinythemes", "leaflet", "dplyr", "DT", "rgdal", 
-       "raster", "maptools", "RColorBrewer"))
+```r
+install.packages(c("shiny", "shinythemes", "leaflet", "dplyr", "DT",
+                   "sf", "terra", "RColorBrewer"))
+```
 
-NOTE: there are some known issues when installing the package "rgdal" on Linux. Please, refer to this blog <http://robinlovelace.net/r/2013/11/26/installing-rgdal-on-ubuntu.html>  or this blog <https://philmikejones.wordpress.com/2014/07/14/installing-rgdal-in-r-on-linux/> to solve the issue.
+The spatial code uses `sf` for vector data and `terra` for rasters. Use Leaflet 2.2.0 or newer, which supports `SpatRaster` objects. On Linux, source installations of `sf` and `terra` require GDAL, GEOS and PROJ development libraries; Windows users can use CRAN binaries.
+
+The bundled TIFFs have incomplete CRS metadata. The app assigns their known EPSG:3857 coordinate system in memory without changing the files or resampling their grids. Temporal datasets remain ordinary R arrays. Country summaries retain cell-center selection and the stored mean-point fallback for small countries.
+
+If R reports a PROJ database version mismatch mentioning another application (such as PostGIS), clear its projection-data override **before loading the app**, in a fresh R session:
+
+```r
+Sys.unsetenv(c("PROJ_LIB", "PROJ_DATA"))
+shiny::runApp("~/GBIFapp") # Replace with the app folder on your computer.
+```
+
+The dependency lockfile and deployment manifest reflect the installed modern packages. These may retain `raster` and `sp` as dependencies of Leaflet; the app itself no longer uses their classes or functions. Regenerate deployment metadata with `rsconnect::writeManifest(appDir = ".")` when changing dependencies.
+
+To compare the migrated results against the legacy raster calculations, install `raster` as a test dependency and run this from the app folder:
+
+```r
+source("tests/spatial-migration.R")
+```
 
 Execute the following script in R to run the interactive application.
 
@@ -21,7 +40,7 @@ Alternatively, download the files and run the following scripts.
        runApp("~/GBIFapp", display.mode = "showcase") # Use this command to see the R code
 
 ### Running the application
-This example is focused on the Amphibians of Europe as the reference taxonomic group (RTG; GBIF.org (23 June 2016) GBIF Occurrence Download https://doi.org/10.15468/dl.6df3py). In the first tab &quot;<b>Spatial Bias</b>&quot;  we look at the bias purely over space. Here, we also include data for <i>Rana temporaria</i> as a focal species. Plotted in black is the best estimate of the species distribution according to the <a href="http://www.iucnredlist.org/technical-documents/spatial-data">IUCN</a> in order to illustrate the spatial bias present on observations for the RTG and for a particular species. 
+This example is focused on the Amphibians of Europe as the reference taxonomic group (RTG). In the first tab &quot;<b>Spatial Bias</b>&quot;  we look at the bias purely over space. Here, we also include data for <i>Rana temporaria</i> as a focal species. Plotted in black is the best estimate of the species distribution according to the <a href="http://www.iucnredlist.org/technical-documents/spatial-data">IUCN</a> in order to illustrate the spatial bias present on observations for the RTG and for a particular species. 
 
 The O<sub>0.5</sub> parameter defines the number of observations required to decrease the ignorance score (IS) to 0.5 (see the reference above). Here, in order to easily compare among scales, this parameter is defined scale dependent, that is, relative to the minimum resolution available (O<sub>0.5</sub> = 1 @25km <=> O<sub>0.5</sub> = 16 @100km). When the <em>Observation Index</em> check-box is ticked the number of observations for the RTG is relative to the observed number of species in the same grid cell, or the maximum observed in the 3x3 or 5x5 cells neighborhood <abbr title="A different approach could be used instead to better estimate richness, if needed. Read the general description page mentioned above for more details about the use of the observation index"><font color="blue">[2]</font></abbr>.</p>
 
