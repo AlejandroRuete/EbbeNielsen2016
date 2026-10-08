@@ -5,3 +5,5 @@ License: GPL-3
 DisplayMode: Normal
 Tags: getting-started
 Type: Shiny
+Imports: shiny, shinythemes, leaflet (>= 2.2.0), dplyr, DT, sf, terra,
+    RColorBrewer, htmltools

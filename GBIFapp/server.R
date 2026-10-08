@@ -2,8 +2,10 @@ palRWB <- colorNumeric(c("blue","white", "red"), c(0,1), na.color = "transparent
 palGWR <- colorNumeric(c("red","lightpink", "green4"), c(0,1), na.color = "transparent")
 colCount<-c("black", "#7FC97F", "#BEAED4", "#FDC086", "#CDCD00", "#386CB0", "#F0027F", "#BF5B17", "#666666") # Accent
 #colCount<-c("black","#9F0F44", "#D53E4F", "#E76835", "#EFAD54", "#F8DF8A", "#EBEA9A", "#B7D3A3", "#72BCA5", "#2A8ABC", "#554F95")
-funM<-function(x, y, ...){
-  return(max(c(x,y), na.rm=T))
+# The former localFun combined richness with an all-zero second raster.
+# Keep its zero floor, including neighborhoods containing only missing values.
+neighborhoodRichness <- function(x, size) {
+  terra::focal(x, w = size, fun = function(values) max(c(0, values), na.rm = TRUE))
 }
 
 shinyServer(function(input, output, session) {
@@ -22,12 +24,10 @@ shinyServer(function(input, output, session) {
   })
   richInput <- reactive({
     tmpR<-richInputRaw()
-    tmp0<-tmpR
-    tmp0[]<-0
     switch(input$ngb,
            "1" = tmpR,
-           "3" = localFun(tmpR, tmp0, ngb=3, fun=funM),
-           "5" = localFun(tmpR, tmp0, ngb=5, fun=funM))
+           "3" = neighborhoodRichness(tmpR, 3),
+           "5" = neighborhoodRichness(tmpR, 5))
   })
   ranaInput <- reactive({
     switch(input$res,
@@ -44,13 +44,13 @@ ignorInput <- reactive({
     if(input$index==TRUE){
       o<-obs
       o<-obs/rich
-      o[which(obs[]==0)]<-0
+      o[which(rasterValues(obs)==0)]<-0
       obs<-o
     }
     res<-as.numeric(input$res)
     obs50<-input$obs50 * (res/25)^2
     setProgress(0.1)
-    ign<-calc(obs, fun=function(x){return(obs50/(x+obs50))})
+    ign<-obs50/(obs+obs50)
     setProgress(0.25)
     return(ign)
   })
@@ -63,7 +63,7 @@ sppPAInput<-reactive({
     res<-as.numeric(input$res)
     obs50<-input$obs50spp * (res/25)^2
     setProgress(0.26)
-    spp.psabs<- calc(spp, fun=function(x){return(obs50/(x+obs50))})
+    spp.psabs<-obs50/(spp+obs50)
     return(spp.psabs)
     setProgress(0.5)
   })
@@ -76,8 +76,8 @@ sppPropInput<-reactive({ #Populaiton size index or Odds of sampling a species
                  obs <- obsInput()
                  # rich <- richInputRaw()
                  setProgress(0.51)
-                 spp.prop<- overlay(spp, obs, fun=function(x,y){return(x/y)}) # Proportion of obs of spp over the total obs count
-                 spp.prop[which(spp.prop[]==Inf)]<-0 ## Inf are errors between Rana and Amp layers, where Rana is present where no Obs are registered
+                 spp.prop<- (spp / obs) # Proportion of obs of spp over the total obs count
+                 spp.prop[which(rasterValues(spp.prop)==Inf)]<-0 ## Inf are errors between Rana and Amp layers, where Rana is present where no Obs are registered
                  return(spp.prop)
                  setProgress(0.6)
                })
@@ -90,8 +90,8 @@ sppOddsInput<-reactive({ #Populaiton size index or Odds of sampling a species
                  obs <- obsInput()
                  # rich <- richInputRaw()
                  setProgress(0.61)
-                 spp.odd<- overlay(spp, obs, fun=function(x,y){return(x/y * x)}) # How many obs of spp per total obs count
-                 spp.odd[which(spp.odd[]==Inf)]<-0 ## Inf are errors between Rana and Amp layers, where Rana is present where no Obs are registered
+                 spp.odd<- (spp / obs * spp) # How many obs of spp per total obs count
+                 spp.odd[which(rasterValues(spp.odd)==Inf)]<-0 ## Inf are errors between Rana and Amp layers, where Rana is present where no Obs are registered
                  return(spp.odd)
                  setProgress(0.75)
                })
@@ -101,17 +101,17 @@ sppPAcertInput<-reactive({
   withProgress(message = 'Calculating Species Presence', 
                value = 0.75, {
     setProgress(0.76)
-    spp.abs<-overlay(sppPAInput(), 1-ignorInput(), fun="prod")
-    spp.abs<-calc(spp.abs, fun=function(x) ifelse(x<=0.5, -99999, 1-x)) ## How sure  that it is not there 
-    spp.pres<-calc(1-sppPAInput(), fun=function(x) ifelse(x<=(1-input$prestol), -99999, 1)) ##Has it been observed more than O0.5? #
+    spp.abs<-(sppPAInput() * (1-ignorInput()))
+    spp.abs<-terra::ifel(spp.abs<=0.5, -99999, 1-spp.abs) ## How sure  that it is not there 
+    spp.pres<-terra::ifel((1-sppPAInput())<=(1-input$prestol), -99999, 1) ##Has it been observed more than O0.5? #
     
-    zero<-calc(spp.abs, fun=function(x) x<- -99999)  
+    zero<-terra::init(spp.abs, -99999)  
     
     setProgress(0.85)
     
-    s<-stack(spp.pres, spp.abs, zero) #zero to avoid warnings()
-    spp.pa<-calc(s, fun=max, na.rm=TRUE) 
-    spp.pa<-calc(spp.pa, fun=function(x) ifelse(x== -99999, NA, x))
+    s<-c(spp.pres, spp.abs, zero) #zero to avoid warnings()
+    spp.pa<-terra::app(s, fun=max, na.rm=TRUE) 
+    spp.pa<-terra::ifel(spp.pa== -99999, NA, spp.pa)
     return(spp.pa)
     setProgress(1)
   })
@@ -142,13 +142,13 @@ ignor100ResInput <- reactive({
    if(input$indexD==TRUE){
       o<-obs
       o<-obs/rich
-      o[which(obs[]==0)]<-0
+      o[which(rasterValues(obs)==0)]<-0
       obs<-o
     }
     res<-100
     obs50<-input$obs50D * (res/25)^2
     setProgress(0.5)
-    ign100<-calc(obs, fun=function(x){return(obs50/(x+obs50))})
+    ign100<-obs50/(obs+obs50)
     setProgress(1)
     return(ign100)
   })
@@ -161,13 +161,13 @@ ignor50ResInput <- reactive({
     if(input$indexD==TRUE){
       o<-obs
       o<-obs/rich
-      o[which(obs[]==0)]<-0
+      o[which(rasterValues(obs)==0)]<-0
       obs<-o
     }
     res<-50
     obs50<-input$obs50D * (res/25)^2
     setProgress(0.5)
-    ign50<-calc(obs, fun=function(x){return(obs50/(x+obs50))})
+    ign50<-obs50/(obs+obs50)
     setProgress(1)
     return(ign50)
   })
@@ -180,41 +180,25 @@ ignor25ResInput <- reactive({
     if(input$indexD==TRUE){
       o<-obs
       o<-obs/rich
-      o[which(obs[]==0)]<-0
+      o[which(rasterValues(obs)==0)]<-0
       obs<-o
     }
     res<-25
     obs50<-input$obs50D * (res/25)^2
     setProgress(0.5)
-    ign25<-calc(obs, fun=function(x){return(obs50/(x+obs50))})
+    ign25<-obs50/(obs+obs50)
     setProgress(1)
     return(ign25)
   })
 }) # end ignorResInput
 
-## Which cells for 100km res
+## Country cell membership at each grid resolution.
 withProgress(message = 'Extracting cells', value = 0, {
-  whichCellCount100 <- cellFromPolygon(AmpEur100, CountEurope)
-  whichTinyRef100<-which(lengths(whichCellCount100)==0)
-  for(c in  1:length(whichTinyRef100)){
-    
-    whichTiny100<-which(as.character(CountEuropeCnt@data[,3]) == Countries[whichTinyRef100[c]])  
-    whichCellCount100[whichTinyRef100[c]]<-cellFromXY(AmpEur100, CountEuropeCnt[whichTiny100,])  
-  }
+  whichCellCount100 <- countryCells(AmpEur100, CountEurope, CountEuropeCnt)
   setProgress(0.33)
-  whichCellCount50 <- cellFromPolygon(AmpEur50, CountEurope)
-  whichTinyRef50<-which(lengths(whichCellCount50)==0)
-  for(c in  1:length(whichTinyRef50)){
-    whichTiny50<-which(as.character(CountEuropeCnt@data[,3]) == Countries[whichTinyRef50[c]])  
-    whichCellCount50[whichTinyRef50[c]]<-cellFromXY(AmpEur50, CountEuropeCnt[whichTiny50,])  
-  }
+  whichCellCount50 <- countryCells(AmpEur50, CountEurope, CountEuropeCnt)
   setProgress(0.66)
-  whichCellCount25 <- cellFromPolygon(AmpEur25, CountEurope)
-  whichTinyRef25<-which(lengths(whichCellCount25)==0)
-  for(c in  1:length(whichTinyRef25)){
-    whichTiny25<-which(as.character(CountEuropeCnt@data[,3]) == Countries[whichTinyRef25[c]])  
-    whichCellCount25[whichTinyRef25[c]]<-cellFromXY(AmpEur25, CountEuropeCnt[whichTiny25,])  
-  }
+  whichCellCount25 <- countryCells(AmpEur25, CountEurope, CountEuropeCnt)
   setProgress(1)
 })
 
@@ -226,12 +210,12 @@ ignorATInput <- reactive({ #ignorance of all times (selected)
     
     obs <- obsTempInput[,,wY]
     obs <- apply(obs,1:2,sum, na.rm=T)
-    obs <- ifelse(is.na(RasRef[]),NA,obs)
+    obs <- ifelse(is.na(rasterValues(RasRef)),NA,obs)
     
     #stacking over sum species is actually not the count of all species seen, is more. Therefore we compare to all times richness AmpEruR100
-    rich <- AmpEurR100[] #richTempInput[,,wY]
+    rich <- rasterValues(AmpEurR100) #richTempInput[,,wY]
     #rich <- apply(rich,1:2,sum, na.rm=T) stacking over sum species is actually not the count of all species seen, is more. Therefore we compare to all times richness.
-    #rich <- ifelse(is.na(RasRef[]),NA,rich)
+    #rich <- ifelse(is.na(rasterValues(RasRef)),NA,rich)
     
     setProgress(0.25)
     if(input$indexD==TRUE){
@@ -299,7 +283,7 @@ observe({
   spp.prop<-isolate(sppPropInput()) #odds
   spp.odds<-isolate(sppOddsInput()) #odds
   spp.pa<-isolate(sppPAcertInput()) #certain PA absences
-  maxOdd<-ceiling(max(spp.odds[], na.rm=TRUE))
+  maxOdd<-ceiling(max(rasterValues(spp.odds), na.rm=TRUE))
   palYORprop <- colorNumeric(c("white","yellow","orange", "red"), c(0,1), na.color = "transparent")
   palYOR <- colorNumeric(c("white","yellow","orange", "red"), c(0,maxOdd), na.color = "transparent")
 
@@ -326,7 +310,7 @@ observe({
   proxy <- leafletProxy("map")
   spp.prop<-isolate(sppPropInput()) #odds
   spp.odds<-isolate(sppOddsInput()) #odds
-  maxOdd<- ceiling(max(spp.odds[], na.rm=TRUE))
+  maxOdd<- ceiling(max(rasterValues(spp.odds), na.rm=TRUE))
   palYORprop <- colorNumeric(c("white","yellow","orange", "red"), c(0,1), na.color = "transparent")
   palYOR <- colorNumeric(c("white","yellow","orange", "red"), c(0,maxOdd), na.color = "transparent")
   
@@ -390,15 +374,15 @@ output$DensIgn <- renderPlot({
   plot(dens$x, dens$y/max(dens$y), xlim=c(0,1), ylim=c(0,1),lwd=2, type="l",
        xlab="Ignorance Score", ylab="Relative Density", main="")
   if(100 %in% input$resPlot){
-    dens<-density(ign100[], from=0, to=1, na.rm=TRUE)
+    dens<-density(rasterValues(ign100), from=0, to=1, na.rm=TRUE)
     lines(dens$x, dens$y/max(dens$y), lwd=1)
   }
   if(50 %in% input$resPlot){
-    dens<-density(ign50[], from=0, to=1, na.rm=TRUE)
+    dens<-density(rasterValues(ign50), from=0, to=1, na.rm=TRUE)
     lines(dens$x, dens$y/max(dens$y), lwd=1, lty=2)
   }
   if(25 %in% input$resPlot){
-    dens<-density(ign25[], from=0, to=1, na.rm=TRUE)
+    dens<-density(rasterValues(ign25), from=0, to=1, na.rm=TRUE)
     lines(dens$x, dens$y/max(dens$y), lwd=1, lty=3)
   }
   
@@ -413,19 +397,19 @@ output$DensIgn <- renderPlot({
         dens<-density(ign[wC], from=0, to=1, na.rm=TRUE)
         lines(dens$x, dens$y/max(dens$y), col=colCount[c+1], lwd=2)
         if(100 %in% input$resPlot){
-          dens<-density(ign100[][wC], from=0, to=1, na.rm=TRUE)
+          dens<-density(rasterValues(ign100)[wC], from=0, to=1, na.rm=TRUE)
           lines(dens$x, dens$y/max(dens$y), col=colCount[c+1], lwd=1)
         }
       }
       if(length(wC50)>1){
         if(50 %in% input$resPlot){
-          dens<-density(ign50[][wC50], from=0, to=1, na.rm=TRUE)
+          dens<-density(rasterValues(ign50)[wC50], from=0, to=1, na.rm=TRUE)
           lines(dens$x, dens$y/max(dens$y), col=colCount[c+1], lwd=1, lty=2)
         }
       }
       if(length(wC25)>1){
         if(25 %in% input$resPlot){
-          dens<-density(ign25[][wC25], from=0, to=1, na.rm=TRUE)
+          dens<-density(rasterValues(ign25)[wC25], from=0, to=1, na.rm=TRUE)
           lines(dens$x, dens$y/max(dens$y), col=colCount[c+1], lwd=1, lty=3)
         }
       }
@@ -467,11 +451,11 @@ tableIgn<-reactive({
     wCres25<-whichCellCount25[[whichCount]]
     
     nocell100[c]<-length(wCres100)
-    mean100[c]<-round(mean(ignRes100[][wCres100], na.rm=TRUE), 2)
+    mean100[c]<-round(mean(rasterValues(ignRes100)[wCres100], na.rm=TRUE), 2)
     nocell50[c]<-length(wCres50)
-    mean50[c]<-round(mean(ignRes50[][wCres50], na.rm=TRUE), 2)
+    mean50[c]<-round(mean(rasterValues(ignRes50)[wCres50], na.rm=TRUE), 2)
     nocell25[c]<-length(wCres25)
-    mean25[c]<-round(mean(ignRes25[][wCres25], na.rm=TRUE),2)
+    mean25[c]<-round(mean(rasterValues(ignRes25)[wCres25], na.rm=TRUE),2)
   }
   tableIgn<-data.frame("Country"=CountriesListAb,
                        "No.cells @100km" = nocell100,
