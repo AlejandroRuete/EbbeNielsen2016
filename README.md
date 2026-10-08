@@ -16,9 +16,9 @@ Operational system: ANY
 This entry consists of:  
 
  - a description of the algorithm to generate Ignorance Scores based Ruete (2015), and potential applications.  
- - two HTML applications hosted in [Shinyapps.io](https://www.shinyapps.io/) with explanations and examples on the capabilities and limitations of the Ignorance Scores: 
-	 - [SLWapp](https://aleruete.shinyapps.io/SLWapp/)  introduce the algorithms and compares the ignorance between seven species groups in Sweden.
-	 - [GBIFapp](https://aleruete.shinyapps.io/GBIFapp/) explores ignorance over space and time for the Amphibians in Europe.
+ - two HTML applications hosted in [Update 2026: migrated to Cloud Connect] [Shinyapps.io](https://www.shinyapps.io/) with explanations and examples on the capabilities and limitations of the Ignorance Scores: 
+	 - [SLWapp](https://aleruete-slwapp.share.connect.posit.cloud)  introduce the algorithms and compares the ignorance between seven species groups in Sweden.
+	 - [GBIFapp](https://aleruete-gbifapp.share.connect.posit.cloud) explores ignorance over space and time for the Amphibians in Europe.
  - a [tutorial](https://github.com/AlejandroRuete/EbbeNielsen2016/blob/master/DataHandlingTutorial/How%20to%20rasterize%20primary%20biodiversity%20data.pdf) on how to process primary biodiversity data in R to produce your own ignorance maps (mainly based on other excellent tutorials).
 
 #### Audience
