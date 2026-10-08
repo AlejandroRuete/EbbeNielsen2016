@@ -1,46 +1,67 @@
-require(raster)
-require(rgdal)
-library(maptools)
+# The bundled grids use SWEREF99 TM, but their GeoTIFFs omit the CRS.
+readGrid <- function(path) {
+  x <- terra::rast(path)
+  if (!nzchar(terra::crs(x))) terra::crs(x) <- terra::crs(Swe)
+  x
+}
 
-Swe<-readShapePoly("data/Sweden Simple Sweref.shp", proj4string=CRS("+proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"))
+Swe <- terra::vect("data/Sweden Simple Sweref.shp")
 GreyColors<-colorRampPalette(c("white", "black"),interpolate="spline", space="Lab")( 16 )
 RedBlue<-colorRampPalette(c("blue","white", "red"),interpolate="spline", space="Lab")( 11 )
 Topo<-terrain.colors(16)
 Topo[16]<-"#FFFFFFFF"
 
-Amp <- raster("data/Amp.tif")
-AmpR <- raster("data/Amp richness.tif")
-Buf<-raster("data/Buf.tif")
-Pel<-raster("data/Pel.tif")
+Amp <- readGrid("data/Amp.tif")
+AmpR <- readGrid("data/Amp richness.tif")
+Buf<-readGrid("data/Buf.tif")
+Pel<-readGrid("data/Pel.tif")
 
-Bir <- raster("data/Bir.tif")
-BirR <- raster("data/Bir richness.tif")
-Par<-raster("data/Par.tif")
-Poe<-raster("data/Poe.tif")
+Bir <- readGrid("data/Bir.tif")
+BirR <- readGrid("data/Bir richness.tif")
+Par<-readGrid("data/Par.tif")
+Poe<-readGrid("data/Poe.tif")
 
-Pae <- raster("data/Pae.tif")
-PaeR <- raster("data/Pae richness.tif")
-Pap<-raster("data/Pap.tif")
-Col<-raster("data/Col.tif")
+Pae <- readGrid("data/Pae.tif")
+PaeR <- readGrid("data/Pae richness.tif")
+Pap<-readGrid("data/Pap.tif")
+Col<-readGrid("data/Col.tif")
 
-Mam <- raster("data/MamLnB.tif")
-MamR <- raster("data/MamLnB richness.tif")
-Alc<-raster("data/Alc.tif")
-Eri<-raster("data/Eri.tif")
+Mam <- readGrid("data/MamLnB.tif")
+MamR <- readGrid("data/MamLnB richness.tif")
+Alc<-readGrid("data/Alc.tif")
+Eri<-readGrid("data/Eri.tif")
 
-Opi <- raster("data/Opi.tif")
-OpiR <- raster("data/Opi richness.tif")
-Opca<-raster("data/Opc.tif")
-Lac<-raster("data/Lac.tif")
+Opi <- readGrid("data/Opi.tif")
+OpiR <- readGrid("data/Opi richness.tif")
+Opca<-readGrid("data/Opc.tif")
+Lac<-readGrid("data/Lac.tif")
 
-Odo <- raster("data/Odo.tif")
-OdoR <- raster("data/Odo richness.tif")
-Lib<-raster("data/Lib.tif")
-Neh<-raster("data/Neh.tif")
+Odo <- readGrid("data/Odo.tif")
+OdoR <- readGrid("data/Odo richness.tif")
+Lib<-readGrid("data/Lib.tif")
+Neh<-readGrid("data/Neh.tif")
 
-Vas <- raster("data/Vas.tif")
-VasR <- raster("data/Vas richness.tif")
-Pan<-raster("data/Pan.tif")
-Eup<-raster("data/Eup.tif")
+Vas <- readGrid("data/Vas.tif")
+VasR <- readGrid("data/Vas richness.tif")
+Pan<-readGrid("data/Pan.tif")
+Eup<-readGrid("data/Eup.tif")
 
-cellwdata<-which(!is.na(Amp[]))
+cellwdata <- which(!is.na(terra::values(Amp, mat = FALSE)))
+
+# Use computed cell values rather than cached statistics for derived layers.
+rasterMax <- function(x) terra::global(x, "max", na.rm = TRUE)[1, 1]
+normalizeRaster <- function(x) {
+  maximum <- rasterMax(x)
+  if (is.finite(maximum) && maximum == 0) return(x)
+  x / maximum
+}
+
+# Keep the scale bar at the original bottom-right cell centre.
+drawScaleBar <- function(x) {
+  right <- terra::xFromCol(x, ncol(x))
+  bottom <- terra::yFromRow(x, nrow(x))
+  scale.lng <- 100000
+  segments(right, bottom, right - scale.lng, bottom, lwd = 2)
+  text(right - scale.lng / 2, bottom + 50000,
+       labels = paste(scale.lng / 1000, "km"), cex = 1.5, xpd = NA)
+}

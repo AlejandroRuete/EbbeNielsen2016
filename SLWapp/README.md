@@ -4,12 +4,20 @@ The Swedish LifeWatch implementation
 
 This interactive application exemplifies the use of three different algorithms to map the ignorance (i.e. bias and lack of sampling effort) present in the observations accessed through the Swedish LifeWatch biodiversity analysis portal <a href="http://www.swedishlifewatch.se">www.swedishlifewatch.se</a>.
 
-You can test it <a href="https://aleruete.shinyapps.io/SLWapp/">here</a> or run it locally in your computer. To run it locally you will need to install <a href="http://www.r-project.org/">R</a> and install the following packages: shiny, raster, rgdal, and maptools.
+You can test it <a href="https://aleruete.shinyapps.io/SLWapp/">here</a> or run it locally in your computer. To run it locally you will need to install <a href="http://www.r-project.org/">R</a> and install the following packages: shiny, shinythemes, and terra.
 
-       install.packages(c("shiny", "raster", "rgdal", "maptools"))
+       install.packages(c("shiny", "shinythemes", "terra"))
 
-NOTE: there are some known issues when installing the package "rgdal" on Linux.
-Please, refer to this blog <http://robinlovelace.net/r/2013/11/26/installing-rgdal-on-ubuntu.html>  or this blog <https://philmikejones.wordpress.com/2014/07/14/installing-rgdal-in-r-on-linux/> to solve the issue.
+Spatial data are read and processed with `terra`. The Sweden outline retains its
+SWEREF99 TM coordinate reference system from the supplied shapefile, and the
+existing GeoTIFFs are used without resampling. Grids without embedded CRS
+metadata are assigned SWEREF99 TM (EPSG:3006), matching the Sweden map.
+
+The old Packrat snapshot has been removed. Install the packages above in your
+current R library. Before deploying, regenerate the deployment manifest using
+`rsconnect::writeManifest(appDir = ".")` from the application folder so package
+versions and file checksums match your environment. The included manifest was
+regenerated for this migration.
 
 Execute the following script in R to run the interactive application.
 
@@ -59,3 +67,16 @@ On the left panel you find options for the Reference taxonomic group and Target 
 Application developed by Alejandro Ruete in Dec 2014. Updated in August 2016
 DOI: dx.doi.org/10.5281/zenodo.17593
 ### Licence GNU v.3
+
+### Migration validation
+
+Run `Rscript --vanilla tests/migration.R` from the application folder. This checks
+all 28 grids, compares calculations with numeric formulas for all 336 combinations
+of group, species, observation index and algorithms, and renders both plot tabs.
+It also checks certainty-slider endpoints and confirms that the retired spatial
+packages are not loaded.
+
+If `terra` warns about an incompatible `proj.db` from another installation
+(for example PostgreSQL), clear the inherited projection paths for the current
+R session before loading the app: `Sys.unsetenv(c("PROJ_LIB", "PROJ_DATA"))`.
+This does not change your system settings.
